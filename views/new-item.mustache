@@ -1,0 +1,50 @@
+<html>
+<head>
+</head>
+
+<body>
+
+ <div id="nav-bar">
+    <a href="/">View all Shops</a>
+</div>
+
+
+<div id="body">
+    <h1>Add NEW ITEM</h1>
+{{#shop}}
+    <form action="/new-item/{{dataValues.id}}" method="POST">
+        <input type="text" name="item" placeholder="Enter Item"/>
+        <input type="hidden" name="shopId" value="{{id}}"/>
+        <input type="text" name="quantity" placeholder="Enter Quantity"/>
+        <input id="postBtn" type="submit" value="Post"/>
+    </form>
+</div>
+<div>
+  <h1>Shop</h1>
+
+  
+    <div>
+    <p><span>{{name}}</span> => {{street}}, {{city}}, {{state}}</p>
+    </div>
+    <ul>
+            <form action="/delete-item" method="POST">
+            <input type="hidden" name="shopId" value="{{dataValues.id}}"/>
+            {{#items}}
+            <li>{{name}}: {{quantity}} 
+            <input type="hidden" name="itemId" value="{{id}}"/>
+            <input id="deleteBtn" type="submit" value="X" />
+            </li>
+        </form>
+            {{/items}}
+    </ul>
+
+    
+
+  {{/shop}}
+
+</div>
+
+
+
+</body>
+</html>

@@ -19,12 +19,35 @@ app.get('/',function(req,res){
  
 })
 
+//create new item
+app.post('/new-item/:shopId',function(req,res){
+    
+    let item = req.body.item
+    let quantity = req.body.quantity
+    let shopId = req.params.shopId
+
+
+
+    models.shoppinglist.findById(shopId).then(function(shop){
+
+    const items = models.items.build({
+        name: item,
+        quantity: quantity,
+        shopid: shopId
+    }) 
+     items.save().then(function(newItem){
+         res.redirect(`/new-item/${shopId}`)
+    })
+})
+})
+
 app.post('/',function(req,res){
 
     let name = req.body.name
     let street = req.body.street
     let city = req.body.city
     let state = req.body.state
+    
 
   const shoppinglist =  models.shoppinglist.build({
         name: name,
@@ -43,6 +66,8 @@ app.listen(3000, function(){
     console.log('Example app listening on port 3000!')
 })
 
+
+//delete shop
 app.post('/delete-shop',function (req,res){
     let shopId = req.body.shopId
     models.shoppinglist.destroy({
@@ -52,9 +77,44 @@ app.post('/delete-shop',function (req,res){
 }).then(function(){
     res.redirect('/')
 })
+})
 
+//delete item
+app.post('/delete-item',function(req,res){
+    let itemId = req.body.itemId
+    let shopId = req.body.shopId
+    console.log("Shop ID" + shopId)
+    models.items.destroy({
+        where: {
+            id : itemId
+        }
+    }).then(function(shop){
+        res.redirect(`new-item/${shopId}`)
+    })
+})
+
+app.get('/new-item/:shopId',function(req,res){
+
+    let shopId = req.params.shopId
+
+    models.shoppinglist.findOne({
+        where: {
+            id : shopId
+        },
+        include: [
+            {
+            model: models.items,
+            as : 'items'
+            }
+        ]
+    }).then(function(shop){
+        res.render('new-item',{shop: shop})
+    })
 
 })
+
+
+
 
 
 
